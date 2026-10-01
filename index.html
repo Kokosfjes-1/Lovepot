@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- ENDRE: tittelen som vises i nettleserfanen -->
+  <title>Søknad om kjærlighet</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --blush: #f3dada;
+      --paper: #fffaf8;
+      --ink: #3b1320;
+      --muted: #7a4a55;
+      --seal: #c62a47;
+      --seal-dark: #a51f39;
+      --line: #e3c1c6;
+      --field: #fffdfc;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--blush);
+      color: var(--ink);
+      font-family: "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+      font-size: 1.0625rem;
+      line-height: 1.55;
+    }
+    main {
+      max-width: 38rem;
+      margin: 0 auto;
+      padding: 2.5rem 1rem 4rem;
+    }
+
+    /* Selve "papiret" */
+    .sheet {
+      position: relative;
+      background: var(--paper);
+      border: 1.5px solid var(--line);
+      border-radius: .4rem;
+      padding: 2rem 1.5rem 2.25rem;
+    }
+    @media (min-width: 34rem) { .sheet { padding: 2.5rem 2.5rem 2.75rem; } }
+
+    .formhead {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      font-size: .9rem;
+      color: var(--muted);
+      border-bottom: 1.5px solid var(--ink);
+      padding-bottom: .6rem;
+      margin-bottom: 1.75rem;
+    }
+    h1 {
+      font-family: "Fraunces", Georgia, serif;
+      font-weight: 600;
+      font-size: clamp(2.3rem, 8.5vw, 3.4rem);
+      line-height: 1.02;
+      letter-spacing: -.015em;
+      margin: 0 0 1rem;
+    }
+    .intro { margin: 0 0 2rem; color: var(--muted); max-width: 32rem; }
+
+    /* Seksjoner, nummerert som på et ekte skjema */
+    fieldset.section {
+      border: 0;
+      margin: 0 0 2rem;
+      padding: 0;
+    }
+    fieldset.section > legend {
+      display: flex;
+      align-items: baseline;
+      gap: .6rem;
+      font-family: "Fraunces", Georgia, serif;
+      font-weight: 600;
+      font-size: 1.3rem;
+      margin-bottom: 1rem;
+      padding: 0;
+    }
+    .num {
+      font-family: "Figtree", sans-serif;
+      font-size: .85rem;
+      font-weight: 600;
+      color: var(--paper);
+      background: var(--ink);
+      border-radius: 1rem;
+      padding: .05rem .55rem;
+      transform: translateY(-.15rem);
+    }
+
+    .field { margin-bottom: 1.15rem; }
+    label.lbl, .q {
+      display: block;
+      font-weight: 600;
+      margin-bottom: .4rem;
+    }
+    .hint { font-weight: 400; color: var(--muted); }
+    input[type="text"], textarea {
+      width: 100%;
+      font: inherit;
+      color: inherit;
+      padding: .7rem .85rem;
+      border: 1.5px solid var(--line);
+      border-radius: .35rem;
+      background: var(--field);
+    }
+    textarea { resize: vertical; min-height: 7rem; }
+    input:focus-visible, textarea:focus-visible, button:focus-visible,
+    .opt input:focus-visible + span, .range:focus-visible, .consent input:focus-visible {
+      outline: 3px solid var(--seal);
+      outline-offset: 2px;
+    }
+
+    /* Valg: hva du søker om */
+    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: .55rem; }
+    .opt input { position: absolute; opacity: 0; pointer-events: none; }
+    .opt span {
+      display: block;
+      height: 100%;
+      padding: .75rem .8rem;
+      border: 1.5px solid var(--line);
+      border-radius: .35rem;
+      cursor: pointer;
+      font-weight: 500;
+      background: var(--field);
+      transition: background .15s, border-color .15s, color .15s;
+    }
+    .opt small { display: block; font-weight: 400; color: var(--muted); font-size: .85rem; }
+    .opt input:checked + span { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+    .opt input:checked + span small { color: #e9c9cf; }
+
+    /* Avkrysning: kvalifikasjoner */
+    .chips { display: flex; flex-wrap: wrap; gap: .45rem; }
+    .chips .opt span { padding: .45rem .8rem; border-radius: 2rem; }
+    .chips .opt input:checked + span::before { content: "✓ "; }
+
+    /* Romantikk-skala */
+    .scale { display: flex; align-items: center; gap: 1rem; }
+    .range { flex: 1; accent-color: var(--seal); height: 2rem; }
+    .scale output {
+      font-family: "Fraunces", Georgia, serif;
+      font-size: 2rem;
+      font-weight: 600;
+      min-width: 2.5ch;
+      text-align: right;
+      color: var(--seal);
+    }
+    .scale-ends { display: flex; justify-content: space-between; font-size: .85rem; color: var(--muted); }
+
+    .consent { display: flex; gap: .7rem; align-items: flex-start; font-weight: 500; cursor: pointer; }
+    .consent input { width: 1.2rem; height: 1.2rem; margin-top: .2rem; accent-color: var(--seal); flex: none; }
+
+    .honeypot { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
+    button[type="submit"] {
+      width: 100%;
+      margin-top: .75rem;
+      font: inherit;
+      font-weight: 600;
+      font-size: 1.1rem;
+      padding: .95rem 1rem;
+      border: 0;
+      border-radius: .35rem;
+      background: var(--seal);
+      color: #fff;
+      cursor: pointer;
+    }
+    button[type="submit"]:hover { background: var(--seal-dark); }
+    button[disabled] { opacity: .6; cursor: progress; }
+
+    .status { margin: 1rem 0 0; min-height: 1.5em; }
+    .status.error { color: var(--seal-dark); font-weight: 600; }
+
+    /* Kvittering med stempel */
+    .receipt { text-align: center; padding: 1.5rem 0 .5rem; }
+    .receipt h2 {
+      font-family: "Fraunces", Georgia, serif;
+      font-weight: 600;
+      font-size: 1.9rem;
+      margin: 1.5rem 0 .5rem;
+    }
+    .receipt p { margin: 0 auto .4rem; color: var(--muted); max-width: 26rem; }
+    .stamp {
+      display: inline-grid;
+      place-items: center;
+      width: 9.5rem;
+      height: 9.5rem;
+      border: 4px double var(--seal);
+      border-radius: 50%;
+      color: var(--seal);
+      font-family: "Fraunces", Georgia, serif;
+      font-weight: 600;
+      text-align: center;
+      line-height: 1.1;
+      transform: rotate(-12deg);
+    }
+    .stamp b { display: block; font-size: 2.2rem; }
+    .stamp span { font-size: 1.15rem; letter-spacing: .08em; }
+    .receipt:not([hidden]) .stamp { animation: stamp .45s cubic-bezier(.2, 1.4, .4, 1) both; }
+    @keyframes stamp {
+      from { transform: rotate(-30deg) scale(2.2); opacity: 0; }
+      to { transform: rotate(-12deg) scale(1); opacity: 1; }
+    }
+
+    [hidden] { display: none !important; }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { transition: none !important; animation: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <section class="sheet" aria-labelledby="title">
+      <!-- ENDRE: teksten øverst på skjemaet -->
+      <div class="formhead">
+        <span>Skjema K-14</span>
+        <span>Kontoret for hjertesaker</span>
+      </div>
+      <h1 id="title">Søknad om kjærlighet</h1>
+      <p class="intro">Fyll ut skjemaet så ærlig du kan. Alle søknader blir lest nøye, og du får svar så snart hjertet har bestemt seg.</p>
+
+      <form id="love-form" novalidate>
+        <fieldset class="section">
+          <legend><span class="num">1</span>Om deg</legend>
+          <div class="field">
+            <label class="lbl" for="name">Navn</label>
+            <input type="text" id="name" name="name" maxlength="100" autocomplete="name" required>
+          </div>
+          <div class="field">
+            <label class="lbl" for="contact">Hvordan kan vi nå deg? <span class="hint">(e-post, telefon eller Snapchat)</span></label>
+            <input type="text" id="contact" name="contact" maxlength="200" required>
+          </div>
+        </fieldset>
+
+        <fieldset class="section">
+          <legend><span class="num">2</span>Hva søker du om?</legend>
+          <div class="grid2" role="radiogroup">
+            <label class="opt"><input type="radio" name="kind" value="kjaereste"><span>Kjæreste<small>Hele pakken</small></span></label>
+            <label class="opt"><input type="radio" name="kind" value="date"><span>En date<small>Så får vi se</small></span></label>
+            <label class="opt"><input type="radio" name="kind" value="kaffe"><span>En kaffe<small>Lav risiko</small></span></label>
+            <label class="opt"><input type="radio" name="kind" value="klem"><span>En klem<small>Det holder lenge</small></span></label>
+          </div>
+        </fieldset>
+
+        <fieldset class="section">
+          <legend><span class="num">3</span>Begrunnelse</legend>
+          <div class="field">
+            <label class="lbl" for="reason">Hvorfor er du den rette?</label>
+            <textarea id="reason" name="reason" maxlength="1500" required></textarea>
+          </div>
+          <div class="field">
+            <span class="q" id="quals-label">Kvalifikasjoner <span class="hint">(kryss av alt som passer)</span></span>
+            <div class="chips" role="group" aria-labelledby="quals-label">
+              <label class="opt"><input type="checkbox" name="qualifications" value="mat"><span>Lager god mat</span></label>
+              <label class="opt"><input type="checkbox" name="qualifications" value="vitser"><span>Ler av dårlige vitser</span></label>
+              <label class="opt"><input type="checkbox" name="qualifications" value="klemmer"><span>Gir gode klemmer</span></label>
+              <label class="opt"><input type="checkbox" name="qualifications" value="lytter"><span>Lytter faktisk</span></label>
+              <label class="opt"><input type="checkbox" name="qualifications" value="dyr"><span>Liker dyr</span></label>
+              <label class="opt"><input type="checkbox" name="qualifications" value="oppvask"><span>Tar oppvasken</span></label>
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset class="section">
+          <legend><span class="num">4</span>Egenvurdering</legend>
+          <div class="field">
+            <label class="lbl" for="romance">Hvor romantisk er du?</label>
+            <div class="scale">
+              <input class="range" type="range" id="romance" name="romance" min="1" max="10" step="1" value="5">
+              <output id="romance-out" for="romance">5</output>
+            </div>
+            <div class="scale-ends" aria-hidden="true"><span>Sender memes</span><span>Skriver dikt</span></div>
+          </div>
+          <div class="field">
+            <label class="lbl" for="pickup">Din beste sjekkereplikk <span class="hint">(valgfritt)</span></label>
+            <input type="text" id="pickup" name="pickup" maxlength="300">
+          </div>
+        </fieldset>
+
+        <fieldset class="section">
+          <legend><span class="num">5</span>Underskrift</legend>
+          <label class="consent">
+            <input type="checkbox" id="consent" name="consent">
+            <span>Jeg bekrefter at opplysningene er sanne og at søknaden er ærlig ment.</span>
+          </label>
+        </fieldset>
+
+        <!-- Felle for spam-roboter. Mennesker ser aldri dette feltet. -->
+        <div class="honeypot" aria-hidden="true">
+          <label for="website">Nettside</label>
+          <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
+        </div>
+
+        <button type="submit" id="submit">Send søknad</button>
+        <p class="status" id="status" role="status" aria-live="polite"></p>
+      </form>
+
+      <div class="receipt" id="receipt" hidden tabindex="-1">
+        <div class="stamp" aria-hidden="true"><div><b>♥</b><span>Mottatt</span></div></div>
+        <h2>Søknaden er sendt</h2>
+        <p id="receipt-text"></p>
+        <p>Forventet saksbehandlingstid: tre til fem hjerteslag.</p>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const form = document.getElementById("love-form");
+    const statusEl = document.getElementById("status");
+    const submitBtn = document.getElementById("submit");
+    const romance = document.getElementById("romance");
+    const romanceOut = document.getElementById("romance-out");
+
+    romance.addEventListener("input", () => { romanceOut.textContent = romance.value; });
+
+    function showError(message, field) {
+      statusEl.textContent = message;
+      statusEl.className = "status error";
+      if (field) field.focus();
+    }
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      const name = form.name.value.trim();
+      const contact = form.contact.value.trim();
+      const kind = form.kind.value;
+      const reason = form.reason.value.trim();
+
+      if (!name) return showError("Skriv inn navnet ditt.", form.name);
+      if (!contact) return showError("Skriv hvordan vi kan nå deg, for eksempel e-post, telefon eller Snapchat.", form.contact);
+      if (!kind) return showError("Velg hva du søker om.", form.querySelector('input[name="kind"]'));
+      if (!reason) return showError("Skriv hvorfor du er den rette.", form.reason);
+      if (!form.consent.checked) return showError("Kryss av for at søknaden er ærlig ment.", form.consent);
+
+      const payload = {
+        name,
+        contact,
+        kind,
+        reason,
+        romance: Number(romance.value),
+        qualifications: [...form.querySelectorAll('input[name="qualifications"]:checked')].map((c) => c.value),
+        pickup: form.pickup.value.trim(),
+        consent: true,
+        website: form.website.value
+      };
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Sender …";
+      statusEl.textContent = "";
+      statusEl.className = "status";
+
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 20000);
+
+      try {
+        const res = await fetch("/api/soknad", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+          signal: controller.signal
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) {
+          const msg = data.error || "Søknaden ble ikke sendt. Prøv igjen om litt.";
+          throw new Error(data.code ? msg + " (feilkode: " + data.code + ")" : msg);
+        }
+
+        form.hidden = true;
+        document.querySelector(".intro").hidden = true;
+        document.getElementById("receipt-text").textContent =
+          "Takk, " + name + ". Søknaden din er registrert og ligger nå til behandling.";
+        const receipt = document.getElementById("receipt");
+        receipt.hidden = false;
+        receipt.focus();
+      } catch (err) {
+        showError(err.name === "AbortError"
+          ? "Det tok for lang tid å sende søknaden. Sjekk nettet og prøv igjen."
+          : err.message);
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Send søknad";
+      } finally {
+        clearTimeout(timeout);
+      }
+    });
+  </script>
+</body>
+</html>
